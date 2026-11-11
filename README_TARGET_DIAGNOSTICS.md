@@ -1,0 +1,3 @@
+# Notebook 11: direction vs volatility-adjusted targets
+
+Run after Notebook 03 has saved master tables. In VS Code, run `notebooks/11_direction_vs_volatility_targets.ipynb` with the stock_ml_dynamic kernel. The notebook compares three target definitions with five chronological development folds, prior/L1/L2 logistic models, 45 fits, training times, ROC curves, confusion matrices, and class prevalences. Final 20% chronological holdout is not evaluated. The binary model excludes exact zero next returns. Volatility-adjusted neutral zone is ±0.5 × current-bar realized_vol_20; no future volatility is used. Model comparisons across target definitions must use target-specific baselines. Results: `artifacts/target_diagnostics/1d/`.
