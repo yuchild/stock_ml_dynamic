@@ -1,0 +1,20 @@
+[
+  {
+    "model":"majority_baseline",
+    "train_rows":336858,
+    "test_rows":87596,
+    "accuracy":0.3178113156,
+    "balanced_accuracy":0.3333333333,
+    "log_loss":1.0986988955,
+    "roc_auc":0.5
+  },
+  {
+    "model":"hist_gradient_boosting",
+    "train_rows":336858,
+    "test_rows":87596,
+    "accuracy":0.3544796566,
+    "balanced_accuracy":0.3538632056,
+    "log_loss":1.1048942615,
+    "roc_auc":0.525988025
+  }
+]

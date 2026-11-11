@@ -1,0 +1,57 @@
+{
+  "run_id": "20261109T200116_527cbed5",
+  "created_utc": "2026-11-09T20:01:16.518804+00:00",
+  "symbol": "AAPL",
+  "interval": "1d",
+  "spec": {
+    "features": [
+      "return_1",
+      "return_5",
+      "return_20",
+      "sma_10_ratio",
+      "sma_20_ratio",
+      "sma_50_ratio",
+      "volatility_20",
+      "volume_ratio_20",
+      "rsi_14",
+      "macd_ratio",
+      "range_ratio",
+      "body_ratio"
+    ],
+    "horizon": 5,
+    "target_type": "direction",
+    "threshold": 0.01,
+    "test_fraction": 0.2,
+    "min_labeled_rows": 200,
+    "random_state": 42,
+    "sma_short": 10,
+    "sma_medium": 20,
+    "sma_long": 50,
+    "volatility_window": 20,
+    "volume_window": 20,
+    "rsi_window": 14
+  },
+  "spec_hash": "9f346e763ebf",
+  "metrics": {
+    "prior_baseline": {
+      "accuracy": 0.579746835443038,
+      "balanced_accuracy": 0.5,
+      "brier_score": 0.243672193146666,
+      "roc_auc": 0.5
+    },
+    "hist_gradient_boosting": {
+      "accuracy": 0.529113924050633,
+      "balanced_accuracy": 0.496935339611722,
+      "brier_score": 0.27602016507687765,
+      "roc_auc": 0.48337454621981374
+    }
+  },
+  "train_rows": 1546,
+  "test_rows": 395,
+  "raw_bars": 2000,
+  "purged_bars": 5,
+  "train_end": "2025-03-28 00:00:00+00:00",
+  "test_start": "2025-04-07 00:00:00+00:00",
+  "test_end": "2026-10-30 00:00:00+00:00",
+  "warning": "Single holdout metrics are exploratory. Selecting on this test set biases comparisons; confirm with untouched out-of-sample data."
+}

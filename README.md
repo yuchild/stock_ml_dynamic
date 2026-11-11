@@ -22,3 +22,17 @@ Open `notebooks/01_feature_target_experiments.ipynb`, select `Python (stock_ml_d
 - `app.py` and `pages/`: read-only visualization and saved model evaluation; no training UI
 
 Saved model ranking is exploratory. A single holdout and repeated feature tuning are not a validated production selection process.
+
+## All-stock master feature table (notebook-first)
+
+Open `notebooks/03_universe_master_table.ipynb` in VS Code. Install notebook dependencies
+with `python -m pip install -e '.[ml,notebook,dev]'`. It reads all tickers for one
+interval from PostgreSQL, computes per-stock causal features and next-bar targets,
+fits global training-only direction quantiles and K-means candle types, and fits a
+training-only scaler + one-hot encoder. It saves labeled rows, latest inference
+rows, fitted transforms and a manifest under `artifacts/master_tables/<interval>/`.
+
+Do not fit preprocessing again on validation, test or inference data. Never
+randomly shuffle time-series rows for training. `next_adj_close` is the next-bar
+regression target; `adj_close` is the current price. The last row per stock is
+excluded from labeled training data but preserved for next-bar inference.

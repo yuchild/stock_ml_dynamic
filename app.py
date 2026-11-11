@@ -107,4 +107,4 @@ if rows:
     st.dataframe(matching, use_container_width=True, hide_index=True)
     st.caption("Only compare identical target definitions and test periods. A final untouched evaluation is required before deployment.")
 else:
-    st.caption("No saved model experiments for this ticker and interval yet. Open Model Training to create one.")
+    st.caption("No saved model experiments for this ticker and interval yet. Run a training notebook to create one.")

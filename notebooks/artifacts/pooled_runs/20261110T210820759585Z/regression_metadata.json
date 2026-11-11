@@ -1,0 +1,20 @@
+{
+  "task": "regression",
+  "master_directory": "/home/oem/Documents/github/stock_ml_dynamic/notebooks/artifacts/master_tables/1d",
+  "feature_columns": [
+    "top_pct",
+    "body_pct",
+    "bottom_pct",
+    "gap",
+    "adj_z",
+    "slope",
+    "concavity",
+    "candle_type",
+    "month_of_year",
+    "day_of_month",
+    "day_of_week",
+    "hour_of_day"
+  ],
+  "transformer_file": "transformers.joblib",
+  "note": "Models consume saved training-fitted preprocessing. Single chronological holdout is exploratory; do not select and deploy solely on this score."
+}

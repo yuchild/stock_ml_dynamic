@@ -1,0 +1,20 @@
+[
+  {
+    "model":"mean_return_baseline",
+    "train_rows":336858,
+    "test_rows":87596,
+    "return_mae":0.0146187841,
+    "return_rmse":0.0228348439,
+    "return_r2":-0.0006268349,
+    "price_mae":3.0639361767
+  },
+  {
+    "model":"hist_gradient_boosting",
+    "train_rows":336858,
+    "test_rows":87596,
+    "return_mae":0.0150234152,
+    "return_rmse":0.023364923,
+    "return_r2":-0.0476223589,
+    "price_mae":3.1580449383
+  }
+]
