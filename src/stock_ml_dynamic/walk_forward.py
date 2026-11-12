@@ -36,7 +36,7 @@ def expanding_folds(frame, n_folds=3, initial_fraction=0.55):
     return [Fold(i+1, times[bounds[i]], times[bounds[i+1]]) for i in range(n_folds)]
 
 
-def fold_data(frame, fold, *, selected_k=4, cluster_fit_limit=30000):
+def fold_data(frame, fold, *, selected_k=4, cluster_fit_limit=30000, target_q=3):
     """Return fold-specific X/y and fitted transformations.
 
     Training labels are observed no later than train_end; test features are
@@ -51,7 +51,7 @@ def fold_data(frame, fold, *, selected_k=4, cluster_fit_limit=30000):
     test = (df['bar_timestamp'] > fold.train_end) & (df['next_bar_timestamp'] <= fold.test_end)
     if not train.any() or not test.any():
         raise ValueError('Empty train/test fold')
-    quantiles = DirectionQuantiles().fit(df.loc[train,'next_return'])
+    quantiles = DirectionQuantiles(q=target_q).fit(df.loc[train,'next_return'])
     # Fit clustering only with training-period candles; cap rows to keep notebook practical.
     cluster_rows = df.loc[df['bar_timestamp'] <= fold.train_end]
     if len(cluster_rows) > cluster_fit_limit:

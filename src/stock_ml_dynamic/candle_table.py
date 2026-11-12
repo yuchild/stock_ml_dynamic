@@ -65,30 +65,39 @@ def build_candle_table(prices: pd.DataFrame, z_window: int = 30, timestamp_timez
 
 @dataclass
 class DirectionQuantiles:
-    """Fit next-return tertile boundaries ONLY on the training rows."""
+    """Train-only quantile target. Legacy q=3 retained for saved-model compatibility.
+
+    q=7 maps ascending septiles to [2,2,0,0,1,1,1].
+    Duplicate edges fail explicitly rather than silently changing class semantics.
+    """
+    q: int = 3
     edges_: np.ndarray | None = None
     labels_: list | None = None
 
     def fit(self, training_next_returns: pd.Series):
-        values = pd.to_numeric(training_next_returns, errors='coerce').dropna()
+        values = pd.to_numeric(training_next_returns, errors='coerce').replace([np.inf,-np.inf],np.nan).dropna()
         if values.empty:
-            raise ValueError('No non-null training returns')
-        _, edges = pd.qcut(values, q=3, duplicates='drop', retbins=True)
+            raise ValueError('No finite training returns')
+        if self.q not in (3,7):
+            raise ValueError('Supported quantile targets: q=3 or q=7')
+        _, edges = pd.qcut(values, q=self.q, duplicates='drop', retbins=True)
         n = len(edges)-1
-        if n < 2:
-            raise ValueError('Fewer than two quantile bins; direction target unavailable')
+        if n != self.q:
+            raise ValueError(f'q={self.q} produced only {n} unique bins; cannot preserve the requested target mapping')
         self.edges_ = np.asarray(edges, dtype=float)
-        self.labels_ = {3:[2,0,1],2:[0,1]}[n]
+        self.labels_ = [2,0,1] if self.q == 3 else [2,2,0,0,1,1,1]
         return self
 
     def transform(self, next_returns: pd.Series) -> pd.Series:
         if self.edges_ is None:
             raise ValueError('Fit quantiles first')
-        # Extend outer edges so future returns outside the training range are classified.
         edges = self.edges_.copy()
         edges[0], edges[-1] = -np.inf, np.inf
-        bins = pd.cut(pd.to_numeric(next_returns, errors='coerce'), bins=edges, labels=self.labels_, include_lowest=True)
-        return pd.Series(bins, index=next_returns.index).astype('Int64')
+        # pd.cut labels must be unique for ordered categoricals. Use bin IDs then map.
+        ids = pd.cut(pd.to_numeric(next_returns, errors='coerce'), bins=edges,
+                     labels=False, include_lowest=True)
+        mapping = dict(enumerate(self.labels_))
+        return pd.Series(ids, index=next_returns.index).map(mapping).astype('Int64')
 
 
 @dataclass

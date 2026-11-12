@@ -1,0 +1,7 @@
+# Notebook 14 — Prospective classifier tracking
+
+Run `notebooks/14_prospective_prediction_tracking.ipynb` after updating `raw.stock_prices`. The notebook reads OHLCV directly from PostgreSQL and rebuilds all causal features. It retrains the preselected logistic L2 C=0.1 on observed history only, with 5/20 volatility windows and the same original candle and market features, and saves model, fitted quantiles, KMeans, scalers, one-hot encoder and feature order in a versioned immutable artifact. Subsequent runs can load the oldest saved model for a fixed prospective trial.
+
+Prediction recording is deliberately opt-in (`RECORD_PREDICTIONS=False` by default) because incomplete/stale bars must not be recorded as genuine prospective forecasts. Predictions are stored in `artifacts/prospective/1d/prediction_ledger.parquet`; repeated same-key submissions are skipped. The ledger is single-writer only. Reconciliation is performed only after a subsequent observed bar appears. ROC-AUC and log-loss require at least 30 resolved predictions and all 3 actual classes. Results are not comparable to historical CV until enough prospective data accumulate.
+
+The last historical holdout was evaluated in Notebook 13 and must not be reused for model selection. This new model can fit all known outcomes, including previously held-out history, because model choice is frozen and only future predictions are used for prospective scoring.
