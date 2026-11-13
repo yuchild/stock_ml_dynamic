@@ -1,0 +1,5 @@
+# Notebook 30 — 360° Feature Space EDA
+
+Run `notebooks/30_feature_space_360_eda.ipynb` after installing the existing project requirements plus `seaborn`, `matplotlib`, `scikit-learn`, `nbformat` and a Parquet engine (`pyarrow`). Notebook reads the existing master and optionally sector metadata from PostgreSQL. It does not write to PostgreSQL, historical holdout, or prediction ledger. All numeric histograms use five bins. It includes categorical distributions, numerical profiling, Pearson/Spearman correlations, L1/L2 regularized multinomial logistic regression, Ridge return regression, PCA, ticker correlations, sector correlations, drift, and quality diagnostics.
+
+**Interpretation:** the sector reference may contain today's membership; treat sector analytics as descriptive, not point-in-time predictive inputs. Regression diagnostics use only a development-window chronological split. Heavy plots can take several minutes. Change `MAX_EDA_ROWS`, `MIN_OVERLAP`, `REG_ROWS` at the top to manage resource use.
