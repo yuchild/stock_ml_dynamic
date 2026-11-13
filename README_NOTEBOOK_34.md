@@ -1,0 +1,7 @@
+# Notebook 34: Nested chronological probability calibration and coverage-matched entries
+
+Open `notebooks/34_probability_calibration_coverage_matched.ipynb` and run all cells with your project's `.venv` kernel. The four master-table files must already exist under `artifacts/master_tables/1d/` at the repository root; they are locally generated and intentionally not included in the ZIP.
+
+This experiment compares full-history Random Forest, OOF meta-logistic, and OOF meta-Random Forest. For each outer development fold, it fits inner models before a 25% chronological calibration tail, uses that tail to fit binary Platt calibration and set thresholds at 5%, 10%, 15%, 20%, and 25% **calibration-period** coverage, then trains outer models on all available outer-training observations and evaluates on outer validation. All model-fitting, calibration, and threshold selection excludes the outer validation labels. Results are in `artifacts/notebook34_calibration_coverage/`.
+
+**Caveats:** Actual validation coverage may deviate from the intended coverage because outer models are refit. Up-only Platt calibration does not produce a new three-class probability vector; accuracy and multiclass ROC-AUC are not recalculated. The entry rule ranks by class-1 probability and differs from Notebook 33's argmax + threshold policy. Validation-decile results are descriptive only. Historical final holdout and prospective ledger are not touched.

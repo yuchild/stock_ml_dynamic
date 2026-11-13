@@ -74,7 +74,7 @@ def aligned_probs(model,x):
     return out
 
 def run_fold(train,valid,cols,*,fold=1,windows=5,cap=60000,trees=200,leaf=20,
-             seed=42,clip=(.005,.995),threshold=.45,cost_bps=10):
+             seed=42,clip=(.005,.995),threshold=.45,cost_bps=10,return_predictions=False):
     """Compare RF full-history, LR/RF OOF meta, and RF on OOF-augmented rows.
 
     Meta training uses only later training-period OOF rows. Final base model
@@ -84,11 +84,13 @@ def run_fold(train,valid,cols,*,fold=1,windows=5,cap=60000,trees=200,leaf=20,
                        seed=seed+fold*100,clip=clip)
     base=train_stage(train,cols,cap=cap,trees=trees,leaf=leaf,seed=seed+fold*100+50,clip=clip)
     pv=base.predict(valid)
+    predictions={'full_history_rf':pv}
     rows=[assess(valid,pv,'full_history_rf',fold,cost_bps,threshold)]
     good=np.isfinite(oof).all(axis=1)
     for kind in ('logistic','rf'):
         meta=fit_meta(oof,train.direction.to_numpy(),kind,seed+fold)
         pm=aligned_probs(meta,meta_features(pv))
+        predictions[f'oof_meta_{kind}']=pm
         rows.append(assess(valid,pm,f'oof_meta_{kind}',fold,cost_bps,threshold))
     # A shallow RF on OOF predictions + original features, trained ONLY on OOF rows.
     # Unlike the full-history baseline, its training subset is smaller: report this.
@@ -99,10 +101,13 @@ def run_fold(train,valid,cols,*,fold=1,windows=5,cap=60000,trees=200,leaf=20,
     for i,c in enumerate(extra):val_df[c]=pv[:,i]
     augmented=train_stage(oof_df,list(cols)+extra,cap=cap,trees=trees,leaf=leaf,
                           seed=seed+fold*100+51,clip=clip)
-    rows.append(assess(valid,augmented.predict(val_df),'oof_augmented_rf',fold,cost_bps,threshold))
+    augmented_p=augmented.predict(val_df)
+    predictions['oof_augmented_rf']=augmented_p
+    rows.append(assess(valid,augmented_p,'oof_augmented_rf',fold,cost_bps,threshold))
     for row in rows:row.update(oof_rows=int(good.sum()),outer_train_rows=len(train),
                                outer_valid_rows=len(valid),feature_count=len(cols))
     audit.insert(0,'outer_fold',fold)
+    if return_predictions:return pd.DataFrame(rows),audit,predictions
     return pd.DataFrame(rows),audit
 
 def run_research(frame,*,n_outer=3,windows=5,cap=60000,trees=200,leaf=20,
