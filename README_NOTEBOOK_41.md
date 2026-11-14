@@ -1,0 +1,3 @@
+# Notebook 41: Ridge edge robustness and tail risk
+
+Run `notebooks/41_edge_robustness_and_tail_risk.ipynb` after restoring `artifacts/master_tables/1d/`. This research-only notebook reconstructs the 80% development set, fits Ridge α100 in three expanding folds and runs 44 numbered experiments and analyses covering ex-ante leave-symbol-out reranking, influential-stock removal, thresholds, rank invariance, coefficient drift, data integrity, tail dependence, concentration, factor-proxy exposure, date-block confidence intervals and payoff. Zero costs. Historical final holdout and prospective ledger remain untouched. Outputs: `artifacts/edge_robustness/1d/`. Exclusions do not retrain model; previously identified contributors make exclusions exploratory.
